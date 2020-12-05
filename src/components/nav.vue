@@ -9,15 +9,18 @@
       mode="horizontal"
       @select="handleSelect"
     >
-      <el-menu-item index="Home">Workspaces</el-menu-item>
+      <el-menu-item index="Workspaces">Workspaces</el-menu-item>
       <el-menu-item index="Reservations">Reservations</el-menu-item>
-      <el-menu-item index="Login">Login / Register</el-menu-item>
-      <el-menu-item index="Login">Log out</el-menu-item>
+      <el-menu-item index="Login">Login</el-menu-item>
+      <el-menu-item index="Register">Register</el-menu-item>
+      <el-menu-item index="Logout">Log out</el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
+import router from "../router/index.js";
+
 export default {
   name: "Nav",
   data() {
@@ -26,8 +29,8 @@ export default {
     };
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key) {
+      if (router.app._route.name != key) router.push({ name: key });
     },
   },
 };
