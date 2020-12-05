@@ -1,5 +1,7 @@
 const LOGIN = '/user/login'
+const REGISTER = '/users'
 
 module.exports ={
-    LOGIN
+    LOGIN,
+    REGISTER
 }
