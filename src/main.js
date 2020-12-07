@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 
 const store = new Vuex.Store({
   state: {
-    user: null
+    user: null,
   }
 })
 
