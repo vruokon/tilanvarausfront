@@ -48,7 +48,7 @@ export default {
           password: this.registerForm.password,
         })
         .then((response) => {
-          console.log(response);
+          this.$store.state.user = response.data.access_token;
         })
         .catch((err) => {
           console.log(err);

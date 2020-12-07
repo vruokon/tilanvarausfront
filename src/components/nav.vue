@@ -11,9 +11,11 @@
     >
       <el-menu-item index="Workspaces">Workspaces</el-menu-item>
       <el-menu-item index="Reservations">Reservations</el-menu-item>
-      <el-menu-item index="Login">Login</el-menu-item>
-      <el-menu-item index="Register">Register</el-menu-item>
-      <el-menu-item index="Logout">Log out</el-menu-item>
+      <el-menu-item v-if="!userLoggedIn" index="Login">Login</el-menu-item>
+      <el-menu-item v-if="!userLoggedIn" index="Register"
+        >Register</el-menu-item
+      >
+      <el-menu-item v-if="userLoggedIn" index="Logout">Log out</el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -31,6 +33,11 @@ export default {
   methods: {
     handleSelect(key) {
       if (router.app._route.name != key) router.push({ name: key });
+    },
+  },
+  computed: {
+    userLoggedIn() {
+      return this.$store.state.user !== null;
     },
   },
 };
