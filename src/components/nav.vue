@@ -17,6 +17,7 @@
       <el-menu-item v-if="!userLoggedIn" index="Register"
         >Register</el-menu-item
       >
+      <el-menu-item v-if="userLoggedIn" index="Me">Me</el-menu-item>
       <el-menu-item v-if="userLoggedIn" index="Logout">Log out</el-menu-item>
     </el-menu>
   </div>
