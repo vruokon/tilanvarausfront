@@ -65,8 +65,8 @@
       </el-col>
     </el-row>
 
-    <el-dialog :title="`${reservationTo} Reservations`" :visible.sync="showReservations" width="50%">
-      <vue-cal style="height: 250px" hide-weekends :events="events.concat(addEvent)" :time-from="16*60" :time-to="21*60"
+    <el-dialog :title="`${reservationTo} Reservations`" :visible.sync="showReservations" width="50%" :before-close="eraseComputedEvents">
+      <vue-cal style="height: 250px" hide-weekends :events="computedEvents.concat(addEvent)" :time-from="16*60" :time-to="21*60"
         hide-view-selector active-view="week" :disable-views="['day', 'month', 'year']" @cell-click="createEvent" />
       <span slot="footer" class="dialog-footer">
         <el-button type="success" v-if="isLoggedIn" @click="confirmReservation" :disabled="addEvent.length<1">Confirm reservation</el-button>
@@ -103,7 +103,8 @@ export default {
       reservationToId: null,
       showEventCreationDialog: false,
       events: [],
-      addEvent: []
+      computedEvents: [],
+      addEvent: [],
     };
   },
   methods: {
@@ -171,8 +172,6 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-
-
     },
     createEvent(event) {
       if (this.$store.state.user == null) {
@@ -190,9 +189,18 @@ export default {
       this.registerForm = this.workspaces[index];
       this.dialogVisible = true;
     },
+    eraseComputedEvents() {
+      this.computedEvents = []
+    },
     openReservation(index) {
       this.reservationTo = this.workspaces[index].name
       this.reservationToId = this.workspaces[index].id
+      this.computedEvents = this.events.filter(x => {
+        if(x.title == this.reservationToId){
+          x.title = this.reservationTo
+          return x
+        }
+      })
       this.showReservations = true
     },
     publish(index) {
@@ -252,8 +260,8 @@ export default {
         this.events = response.data.data.map(x => {
           return {
             title: x.classroom_id,
-            start: moment(x.start_time).subtract(1, 'hour').format('YYYY-MM-DD HH:')+ '00',
-            end: moment(x.end_time).subtract(1, 'hour').format('YYYY-MM-DD HH:')+ '00'
+            start: moment(new Date(x.start_time.replace('T',' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00',
+            end: moment(new Date(x.end_time.replace('T', ' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00'
           }
         });
       })
@@ -267,7 +275,7 @@ export default {
     },
     isLoggedIn(){
       return this.$store.state.user != null;
-    }
+    },
   },
 };
 </script>
