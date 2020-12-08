@@ -66,17 +66,10 @@
               </div>
             </el-col>
             <el-col :span="10">
-              <el-image v-if="!imageError"
-                style="width: 100px; height: 100px"
-                :src="space.name.replace(' ', '_').toLowerCase()"
-                fit="scale-down"
-                @error="imageError = true"
-              ></el-image>
-              <el-image v-else
+              <el-image
                 style="width: 200px; height: 200px"
                 src="class_room.png"
                 fit="scale-down"
-                @error="imageError = true"
               ></el-image>
             </el-col>
           </el-row>
@@ -110,7 +103,6 @@ export default {
       },
       dialogVisible: false,
       workspaces: null,
-      imageError: false,
     };
   },
   methods: {
@@ -209,5 +201,8 @@ export default {
 .label {
   font-weight: bold;
   margin-right: 10px;
+}
+.el-card {
+  margin-bottom: 30px;
 }
 </style>
