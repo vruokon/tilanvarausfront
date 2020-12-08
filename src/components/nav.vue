@@ -54,8 +54,10 @@ export default {
               message: "Logged out successfully",
               type: "success",
             });
+          if (router.app._route.name != 'Workspaces'){
             this.activeIndex = "Workspaces";
             router.push({ name: "Workspaces" });
+          }
           })
           .catch((err) => {
             console.log(err);
