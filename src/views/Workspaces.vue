@@ -119,6 +119,20 @@ export default {
         .post(`http://127.0.0.1:5000${CREATE_WORKSPACE}`, workspace)
         .then((response) => {
           console.log(response);
+          this.$notify({
+          title: 'Workspace Created',
+          message: 'Workspace created successfully.',
+          type: 'success'
+        });
+        this.dialogVisible = false
+        this.registerForm = {
+          id: null,
+        name: "",
+        location: "",
+        type: "",
+        capacity: "",
+        equipment: "",
+        }
         })
         .catch((err) => {
           console.log(err);
