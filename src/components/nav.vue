@@ -10,7 +10,9 @@
       @select="handleSelect"
     >
       <el-menu-item index="Workspaces">Workspaces</el-menu-item>
-      <el-menu-item index="Reservations">Reservations</el-menu-item>
+      <el-menu-item v-if="userLoggedIn" index="Reservations"
+        >Reservations</el-menu-item
+      >
       <el-menu-item v-if="!userLoggedIn" index="Login">Login</el-menu-item>
       <el-menu-item v-if="!userLoggedIn" index="Register"
         >Register</el-menu-item
@@ -22,6 +24,8 @@
 
 <script>
 import router from "../router/index.js";
+import axios from "axios";
+import { LOGOUT } from "../api";
 
 export default {
   name: "Nav",
@@ -32,7 +36,30 @@ export default {
   },
   methods: {
     handleSelect(key) {
-      if (router.app._route.name != key) router.push({ name: key });
+      if (router.app._route.name != key && key != "Logout")
+        router.push({ name: key });
+      else if (key == "Logout") {
+        axios.defaults.headers.common = {
+          Authorization: `Bearer ${this.$store.state.user}`,
+        };
+
+        axios
+          .post(`http://127.0.0.1:5000${LOGOUT}`)
+          .then((response) => {
+            this.$store.state.user = null;
+            console.log(response);
+            this.$notify({
+              title: "Logged out",
+              message: "Logged out successfully",
+              type: "success",
+            });
+            this.activeIndex = "Workspaces";
+            router.push({ name: "Workspaces" });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
   },
   computed: {

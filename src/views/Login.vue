@@ -29,6 +29,8 @@
 
 <script>
 import axios from "axios";
+import router from "../router/index.js";
+
 import { LOGIN } from "../api";
 export default {
   name: "Login",
@@ -49,6 +51,7 @@ export default {
         })
         .then((response) => {
           this.$store.state.user = response.data.access_token;
+          router.push({ name: "Workspaces" });
         })
         .catch((err) => {
           console.log(err);
