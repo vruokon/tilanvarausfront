@@ -163,6 +163,7 @@ export default {
         this.$notify({
           title: 'Unpublished',
           message: 'Workspace unpublished successfully.',
+          type: 'info'
         });
       })
       .catch((err) => {
