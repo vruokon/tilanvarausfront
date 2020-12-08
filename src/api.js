@@ -1,9 +1,14 @@
+//user urls
+const REGISTER = '/users'
 const LOGIN = '/user/login'
 const LOGOUT = '/user/logout'
-const REGISTER = '/users'
+//workspace urls
 const CREATE_WORKSPACE = '/workspace/create'
 const GET_WORKSPACES = '/workspaces'
 const PUBLISH_WORKSPACE = '/workspace/<int:workspace_id>/publish'
+//reservation urls
+const GET_RESERVATIONS = '/reservations/available'
+const CREATE_RESERVATION = '/reservations/create'
 
 module.exports ={
     LOGIN,
@@ -11,5 +16,7 @@ module.exports ={
     CREATE_WORKSPACE,
     GET_WORKSPACES,
     PUBLISH_WORKSPACE,
-    LOGOUT
+    LOGOUT,
+    CREATE_RESERVATION,
+    GET_RESERVATIONS
 }
