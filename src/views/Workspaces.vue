@@ -73,24 +73,45 @@
               ></el-image>
             </el-col>
           </el-row>
-          <el-row type="flex" justify="end" v-if="isAdmin">
-            <el-col :span="7">
-              <el-button @click="publish(index)" :type="space.is_publish ? 'danger' : 'success'">{{space.is_publish ? 'Unpublish' : 'Publish'}}</el-button>
-              <el-button @click="edit(index)">Edit</el-button>
+          <el-row type="flex" justify="end">
+            <el-col :span="12">
+              <el-button v-if="isAdmin"  @click="publish(index)" :type="space.is_publish ? 'danger' : 'success'">{{space.is_publish ? 'Unpublish' : 'Publish'}}</el-button>
+              <el-button v-if="isAdmin"  @click="edit(index)">Edit</el-button>
+              <el-button  @click="openReservation(index)">Make Reservation</el-button>
             </el-col>
           </el-row>
         </el-card>
       </el-col>
     </el-row>
+
+    <el-dialog
+  :title="`${reservationTo} Reservations`"
+  :visible.sync="showReservations"
+  width="50%">
+<vue-cal style="height: 250px"
+hide-weekends
+:time-from="16*60"
+:time-to="21*60"
+hide-view-selector
+active-view="week"
+ />
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="showReservations = false">Cancel</el-button>
+    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+  </span>
+</el-dialog>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import VueCal from 'vue-cal'
+import 'vue-cal/dist/vuecal.css'
 import { CREATE_WORKSPACE, GET_WORKSPACES, PUBLISH_WORKSPACE } from "../api";
 export default {
   name: "Workspaces",
-  components: {},
+  components: {VueCal},
   data() {
     return {
       registerForm: {
@@ -103,6 +124,9 @@ export default {
       },
       dialogVisible: false,
       workspaces: null,
+      showReservations: false,
+      reservationTo: '',
+      reservationToId: null,
     };
   },
   methods: {
@@ -152,6 +176,11 @@ export default {
     edit(index) {
       this.registerForm = this.workspaces[index];
       this.dialogVisible = true;
+    },
+    openReservation(index){
+      this.reservationTo = this.workspaces[index].name
+      this.reservationToId = this.workspaces[index].id
+      this.showReservations = true
     },
     publish(index){
       this.workspaces[index].is_publish = !this.workspaces[index].is_publish 
