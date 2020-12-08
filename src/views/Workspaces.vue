@@ -90,14 +90,16 @@
   width="50%">
 <vue-cal style="height: 250px"
 hide-weekends
+:events="events.concat(addEvent)"
 :time-from="16*60"
 :time-to="21*60"
 hide-view-selector
 active-view="week"
+:disable-views="['day', 'month', 'year']"
+@cell-click="createEvent"
  />
   <span slot="footer" class="dialog-footer">
-    <el-button @click="showReservations = false">Cancel</el-button>
-    <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
+    <el-button type="primary" @click="showReservations = false">Close</el-button>
   </span>
 </el-dialog>
 
@@ -107,6 +109,7 @@ active-view="week"
 <script>
 import axios from "axios";
 import VueCal from 'vue-cal'
+import moment from 'moment';
 import 'vue-cal/dist/vuecal.css'
 import { CREATE_WORKSPACE, GET_WORKSPACES, PUBLISH_WORKSPACE } from "../api";
 export default {
@@ -124,12 +127,38 @@ export default {
       },
       dialogVisible: false,
       workspaces: null,
-      showReservations: false,
+      showReservations: false, 
       reservationTo: '',
       reservationToId: null,
+      showEventCreationDialog: false,
+      events: [],
+      addEvent: []
     };
   },
   methods: {
+    createEvent(event){
+      if(this.isTaken(new Date(event)) == false){
+        let day = new Date(event)
+        let _event ={
+          start: moment(day).minutes(0).seconds(0).milliseconds(0).format('YYYY-MM-DD HH:')+'00',
+          end: moment(day).minutes(0).seconds(0).milliseconds(0).add(1,'hour').format('YYYY-MM-DD HH:')+'00',
+          title: this.reservationTo
+        }
+        this.addEvent.push(_event)
+      }
+    },
+    isTaken(event){
+      if(this.events.length < 1){
+        return false
+      }
+      this.events.forEach(time => {
+        if(moment(event).isSame(time.start) || moment(event).isBetween(time.start, time.end)){
+          return true
+        } else {
+          return false
+        }
+      });
+    },
     addWorkSpace() {
       let workspace = {
         name: this.registerForm.name,
