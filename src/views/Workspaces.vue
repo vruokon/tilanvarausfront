@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <el-dialog title="Tips" :visible.sync="dialogVisible" width="40%">
+    <el-dialog title="Add Workspace" :visible.sync="dialogVisible" width="40%">
       <el-row type="flex" justify="center">
         <el-col :span="20">
           <el-form
@@ -31,7 +31,7 @@
       </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancelAdd">Cancel</el-button>
-        <el-button type="primary" @click="addWorkSpace = false"
+        <el-button type="primary" @click="addWorkSpace"
           >Confirm</el-button
         >
       </span>
