@@ -47,6 +47,7 @@ export default {
           .post(`http://127.0.0.1:5000${LOGOUT}`)
           .then((response) => {
             this.$store.state.user = null;
+            this.$store.state.user_level = 0;
             console.log(response);
             this.$notify({
               title: "Logged out",

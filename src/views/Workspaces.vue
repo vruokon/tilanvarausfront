@@ -39,6 +39,7 @@
     <el-row type="flex" justify="end">
       <el-col :span="10">
         <el-button type="primary" @click="dialogVisible = true"
+        v-if="isAdmin"
           >Add Workspace</el-button
         >
       </el-col>
@@ -79,7 +80,7 @@
               ></el-image>
             </el-col>
           </el-row>
-          <el-row type="flex" justify="end">
+          <el-row type="flex" justify="end" v-if="isAdmin">
             <el-col :span="7">
               <el-button @click="publish(index)" :type="space.is_publish ? 'danger' : 'success'">{{space.is_publish ? 'Unpublish' : 'Publish'}}</el-button>
               <el-button @click="edit(index)">Edit</el-button>
@@ -196,6 +197,11 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+  },
+  computed: {
+    isAdmin(){
+      return this.$store.state.user_level >= 100;
+    }
   },
 };
 </script>

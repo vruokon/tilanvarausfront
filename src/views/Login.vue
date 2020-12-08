@@ -51,6 +51,7 @@ export default {
         })
         .then((response) => {
           this.$store.state.user = response.data.access_token;
+          this.$store.state.user_level = response.data.user_level;
           router.push({ name: "Workspaces" });
         })
         .catch((err) => {
