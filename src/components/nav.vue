@@ -59,4 +59,7 @@ li {
 a {
   color: #42b983;
 }
+.el-menu-item {
+  float: none;
+}
 </style>
