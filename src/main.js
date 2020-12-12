@@ -4,9 +4,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App.vue'
 import router from './router'
 import Vuex from 'vuex'
+import locale from 'element-ui/lib/locale/lang/en'
 
 Vue.use(Vuex)
-Vue.use(ElementUi)
+Vue.use(ElementUi, {locale})
 
 Vue.config.productionTip = false
 
