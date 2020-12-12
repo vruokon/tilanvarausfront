@@ -11,7 +11,7 @@
     >
       <el-menu-item index="Workspaces">Workspaces</el-menu-item>
       <el-menu-item v-if="userLoggedIn" index="Reservations"
-        >Reservations</el-menu-item
+        >My Reservations</el-menu-item
       >
       <el-menu-item v-if="!userLoggedIn" index="Login">Login</el-menu-item>
       <el-menu-item v-if="!userLoggedIn" index="Register"
