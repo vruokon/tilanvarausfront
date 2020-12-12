@@ -53,11 +53,20 @@ export default {
           this.$store.state.user = response.data.access_token;
           this.$store.state.user_level = response.data.user_level;
           router.push({ name: "Workspaces" });
+          this.$notify({
+            title: 'Logged In',
+            message: 'Logged In successfully.',
+            type: 'success'
+          });
         })
         .catch((err) => {
           console.log(err);
+          this.$notify({
+            title: 'Invalid credentials.',
+            message: 'Invalid email or password.',
+            type: 'error'
+          });
         });
-      console.log(LOGIN);
     },
   },
 };

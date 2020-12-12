@@ -1,22 +1,10 @@
 <template>
   <div id="nav">
-    <!-- <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> -->
-
-    <el-menu
-      :default-active="activeIndex"
-      class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-    >
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-menu-item index="Workspaces">Workspaces</el-menu-item>
-      <el-menu-item v-if="userLoggedIn" index="Reservations"
-        >My Reservations</el-menu-item
-      >
+      <el-menu-item v-if="userLoggedIn" index="Reservations">My Reservations</el-menu-item>
       <el-menu-item v-if="!userLoggedIn" index="Login">Login</el-menu-item>
-      <el-menu-item v-if="!userLoggedIn" index="Register"
-        >Register</el-menu-item
-      >
+      <el-menu-item v-if="!userLoggedIn" index="Register">Register</el-menu-item>
       <el-menu-item v-if="userLoggedIn" index="Me">Me</el-menu-item>
       <el-menu-item v-if="userLoggedIn" index="Logout">Log out</el-menu-item>
     </el-menu>
@@ -32,7 +20,7 @@ export default {
   name: "Nav",
   data() {
     return {
-      activeIndex: "",
+      activeIndex: "Workspaces",
     };
   },
   methods: {

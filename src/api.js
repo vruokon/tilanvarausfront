@@ -11,6 +11,8 @@ const PUBLISH_WORKSPACE = '/workspace/<int:workspace_id>/publish'
 const GET_RESERVATIONS = '/reservations/available'
 const CREATE_RESERVATION = '/reservations/create'
 const MY_RESERVATIONS = '/users/reservations'
+const DELETE_RESERVATION = '/reservations/delete'
+
 
 module.exports ={
     LOGIN,
@@ -22,5 +24,6 @@ module.exports ={
     CREATE_RESERVATION,
     GET_RESERVATIONS,
     MY_RESERVATIONS,
+    DELETE_RESERVATION,
     ME
 }

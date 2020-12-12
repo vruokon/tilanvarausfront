@@ -135,6 +135,7 @@ export default {
             capacity: "",
             equipment: "",
           }
+          this.getWorkspaces()
         })
         .catch((err) => {
           console.log(err);
@@ -168,6 +169,7 @@ export default {
           });
           this.showReservations = false
           this.addEvent = []
+          this.getReservations()
         })
         .catch((err) => {
           console.log(err);
@@ -192,8 +194,34 @@ export default {
     eraseComputedEvents() {
       this.computedEvents = []
     },
+    getWorkspaces(){
+      axios
+      .get(`http://127.0.0.1:5000${GET_WORKSPACES}`)
+      .then((response) => {
+        console.log(response);
+        this.workspaces = response.data.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
+    getReservations(){
+      axios
+      .get(`http://127.0.0.1:5000${GET_RESERVATIONS}`)
+      .then((response) => {
+        this.events = response.data.data.map(x => {
+          return {
+            title: x.classroom_id,
+            start: moment(new Date(x.start_time.replace('T',' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00',
+            end: moment(new Date(x.end_time.replace('T', ' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00'
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
     openReservation(index) {
-      console.log('open' , index)
       this.reservationTo = this.workspaces[index].name
       this.reservationToId = this.workspaces[index].id
       this.computedEvents = []
@@ -236,7 +264,6 @@ export default {
             console.log(err);
           });
       }
-
     }
   },
   mounted() {
@@ -247,29 +274,8 @@ export default {
     } else {
       axios.defaults.headers.common = {};
     }
-    axios
-      .get(`http://127.0.0.1:5000${GET_WORKSPACES}`)
-      .then((response) => {
-        console.log(response);
-        this.workspaces = response.data.data;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    axios
-      .get(`http://127.0.0.1:5000${GET_RESERVATIONS}`)
-      .then((response) => {
-        this.events = response.data.data.map(x => {
-          return {
-            title: x.classroom_id,
-            start: moment(new Date(x.start_time.replace('T',' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00',
-            end: moment(new Date(x.end_time.replace('T', ' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00'
-          }
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.getWorkspaces()
+    this.getReservations()
   },
   computed: {
     isAdmin(){
