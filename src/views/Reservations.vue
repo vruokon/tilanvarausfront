@@ -4,13 +4,13 @@
 
 <script>
 import axios from 'axios';
-import {ME} from '../api'
+import {MY_RESERVATIONS} from '../api'
 export default {
   name: "Reservations",
   components: {},
   mounted(){
     axios
-      .get(`http://127.0.0.1:5000${ME}`)
+      .get(`http://127.0.0.1:5000${MY_RESERVATIONS}`)
       .then((response) => {
         console.log(response);
       })
