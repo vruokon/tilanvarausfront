@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <el-dialog title="Add Workspace" :visible.sync="dialogVisible" width="40%">
+    <el-dialog title="Add Workspace" :visible.sync="dialogVisible" :show-close="false"  width="40%">
       <el-row type="flex" justify="center">
         <el-col :span="20">
           <el-form label-position="left" label-width="200px" :model="registerForm">
@@ -65,7 +65,7 @@
       </el-col>
     </el-row>
 
-    <el-dialog :title="`${reservationTo} Reservations`" :visible.sync="showReservations" width="50%" :before-close="eraseComputedEvents">
+    <el-dialog :title="`${reservationTo} Reservations`" :show-close="false"  :visible.sync="showReservations" width="50%" :before-close="eraseComputedEvents">
       <vue-cal style="height: 250px" hide-weekends :events="computedEvents.concat(addEvent)" :time-from="16*60" :time-to="21*60"
         hide-view-selector active-view="week" :disable-views="['day', 'month', 'year']" @cell-click="createEvent" />
       <span slot="footer" class="dialog-footer">
@@ -193,12 +193,14 @@ export default {
       this.computedEvents = []
     },
     openReservation(index) {
+      console.log('open' , index)
       this.reservationTo = this.workspaces[index].name
       this.reservationToId = this.workspaces[index].id
-      this.computedEvents = this.events.filter(x => {
-        if(x.title == this.reservationToId){
+      this.computedEvents = []
+      this.events.forEach(x => {
+        if (x.title == this.reservationToId || x.title == this.reservationTo) {
           x.title = this.reservationTo
-          return x
+          this.computedEvents.push(x)
         }
       })
       this.showReservations = true
