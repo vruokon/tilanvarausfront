@@ -66,7 +66,7 @@
     </el-row>
 
     <el-dialog :title="`${reservationTo} Reservations`" :show-close="false"  :visible.sync="showReservations" width="50%" :before-close="eraseComputedEvents">
-      <vue-cal style="height: 250px" hide-weekends :events="computedEvents.concat(addEvent)" :time-from="16*60" :time-to="21*60"
+      <vue-cal style="height: 280px" hide-weekends :events="computedEvents.concat(addEvent)" :time-from="16*60" :time-to="21*60"
         hide-view-selector active-view="week" :disable-views="['day', 'month', 'year']" @cell-click="createEvent" />
       <span slot="footer" class="dialog-footer">
         <el-button type="success" v-if="isLoggedIn" @click="confirmReservation" :disabled="addEvent.length<1">Confirm reservation</el-button>
@@ -82,10 +82,19 @@ import axios from "axios";
 import VueCal from 'vue-cal'
 import moment from 'moment';
 import 'vue-cal/dist/vuecal.css'
-import { CREATE_WORKSPACE, GET_WORKSPACES, PUBLISH_WORKSPACE, CREATE_RESERVATION, GET_RESERVATIONS } from "../api";
+import {
+  CREATE_WORKSPACE,
+  GET_WORKSPACES,
+  PUBLISH_WORKSPACE,
+  CREATE_RESERVATION,
+  GET_RESERVATIONS,
+  EDIT_WORKSPACE
+} from "../api";
 export default {
   name: "Workspaces",
-  components: {VueCal},
+  components: {
+    VueCal
+  },
   data() {
     return {
       registerForm: {
@@ -98,7 +107,7 @@ export default {
       },
       dialogVisible: false,
       workspaces: null,
-      showReservations: false, 
+      showReservations: false,
       reservationTo: '',
       reservationToId: null,
       showEventCreationDialog: false,
@@ -117,29 +126,60 @@ export default {
         equipment: this.registerForm.equipment,
         reservation_time: "16-21",
       };
-      axios
-        .post(`http://127.0.0.1:5000${CREATE_WORKSPACE}`, workspace)
-        .then((response) => {
-          console.log(response);
-          this.$notify({
-            title: 'Workspace Created',
-            message: 'Workspace created successfully.',
-            type: 'success'
+      if (this.registerForm.id == null) {
+        axios
+          .post(`http://127.0.0.1:5000${CREATE_WORKSPACE}`, workspace)
+          .then((response) => {
+            console.log(response);
+            this.$notify({
+              title: 'Workspace Created',
+              message: 'Workspace created successfully.',
+              type: 'success'
+            });
+            this.dialogVisible = false
+            this.registerForm = {
+              id: null,
+              name: "",
+              location: "",
+              type: "",
+              capacity: "",
+              equipment: "",
+            }
+            this.getWorkspaces()
+          })
+          .catch((err) => {
+            console.log(err);
           });
-          this.dialogVisible = false
-          this.registerForm = {
-            id: null,
-            name: "",
-            location: "",
-            type: "",
-            capacity: "",
-            equipment: "",
-          }
-          this.getWorkspaces()
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      } else {
+        axios
+          .put(`http://127.0.0.1:5000${EDIT_WORKSPACE.replace('<int:workspace_id>', this.registerForm.id)}`, workspace)
+          .then((response) => {
+            console.log(response);
+            this.$notify({
+              title: 'Workspace edited',
+              message: 'Workspace edited successfully.',
+              type: 'success'
+            });
+            this.dialogVisible = false
+            this.registerForm = {
+              id: null,
+              name: "",
+              location: "",
+              type: "",
+              capacity: "",
+              equipment: "",
+            }
+            this.getWorkspaces()
+          })
+          .catch((err) => {
+            this.$notify({
+              title: 'Something went wrong',
+              message: 'Try again later.',
+              type: 'error'
+            });
+            console.log(err);
+          });
+      }
     },
     cancelAdd() {
       this.registerForm = {
@@ -153,9 +193,9 @@ export default {
       this.dialogVisible = false;
     },
     confirmReservation() {
-      let reservation ={
+      let reservation = {
         start_time: this.addEvent[0].start,
-        end_time: this.addEvent[this.addEvent.length-1].end,
+        end_time: this.addEvent[this.addEvent.length - 1].end,
         classroom_id: this.reservationToId
       }
       axios
@@ -179,47 +219,48 @@ export default {
       if (this.$store.state.user == null) {
         return
       }
-        let day = new Date(event)
-        let _event = {
-          start: moment(day).minutes(0).seconds(0).milliseconds(0).format('YYYY-MM-DD HH:') + '00',
-          end: moment(day).minutes(0).seconds(0).milliseconds(0).add(1, 'hour').format('YYYY-MM-DD HH:') + '00',
-          title: this.reservationTo
-        }
-        this.addEvent.push(_event)
+      let day = new Date(event)
+      let _event = {
+        start: moment(day).minutes(0).seconds(0).milliseconds(0).format('YYYY-MM-DD HH:') + '00',
+        end: moment(day).minutes(0).seconds(0).milliseconds(0).add(1, 'hour').format('YYYY-MM-DD HH:') + '00',
+        title: this.reservationTo
+      }
+      this.addEvent.push(_event)
     },
     edit(index) {
       this.registerForm = this.workspaces[index];
+      this.registerForm.id = this.workspaces[index].id;
       this.dialogVisible = true;
     },
     eraseComputedEvents() {
       this.computedEvents = []
     },
-    getWorkspaces(){
+    getWorkspaces() {
       axios
-      .get(`http://127.0.0.1:5000${GET_WORKSPACES}`)
-      .then((response) => {
-        console.log(response);
-        this.workspaces = response.data.data;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    },
-    getReservations(){
-      axios
-      .get(`http://127.0.0.1:5000${GET_RESERVATIONS}`)
-      .then((response) => {
-        this.events = response.data.data.map(x => {
-          return {
-            title: x.classroom_id,
-            start: moment(new Date(x.start_time.replace('T',' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00',
-            end: moment(new Date(x.end_time.replace('T', ' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:')+ '00'
-          }
+        .get(`http://127.0.0.1:5000${GET_WORKSPACES}`)
+        .then((response) => {
+          console.log(response);
+          this.workspaces = response.data.data;
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    },
+    getReservations() {
+      axios
+        .get(`http://127.0.0.1:5000${GET_RESERVATIONS}`)
+        .then((response) => {
+          this.events = response.data.data.map(x => {
+            return {
+              title: x.classroom_id,
+              start: moment(new Date(x.start_time.replace('T', ' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:') + '00',
+              end: moment(new Date(x.end_time.replace('T', ' '))).subtract(2, 'hour').format('YYYY-MM-DD HH:') + '00'
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     openReservation(index) {
       this.reservationTo = this.workspaces[index].name
@@ -278,10 +319,10 @@ export default {
     this.getReservations()
   },
   computed: {
-    isAdmin(){
+    isAdmin() {
       return this.$store.state.user_level >= 100;
     },
-    isLoggedIn(){
+    isLoggedIn() {
       return this.$store.state.user != null;
     },
   },
