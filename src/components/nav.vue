@@ -20,7 +20,7 @@ export default {
   name: "Nav",
   data() {
     return {
-      activeIndex: "Workspaces",
+      activeIndex: "",
     };
   },
   methods: {
