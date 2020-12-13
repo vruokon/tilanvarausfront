@@ -70,6 +70,7 @@
         hide-view-selector active-view="week" :disable-views="['day', 'month', 'year']" @cell-click="createEvent" />
       <span slot="footer" class="dialog-footer">
         <el-button type="success" v-if="isLoggedIn" @click="confirmReservation" :disabled="addEvent.length<1">Confirm reservation</el-button>
+        <el-button type="info" v-if="isLoggedIn" @click="cancelReservation" :disabled="addEvent.length<1">Cancel reservation</el-button>
         <el-button type="primary" @click="showReservations = false">Close</el-button>
       </span>
     </el-dialog>
@@ -191,6 +192,9 @@ export default {
         equipment: "",
       };
       this.dialogVisible = false;
+    },
+    cancelReservation() {
+      this.addEvent = []
     },
     confirmReservation() {
       let reservation = {
