@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @keyup.enter="login">
     <el-row type="flex" justify="center">
       <el-col :span="10">
         <el-form
